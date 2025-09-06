@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'API running', time: new Date().toISOString() });
 });
 
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
+const personRoutes = require('./routes/personRoutes');
+app.use('/api/persons', personRoutes);
 
 
 const PORT = process.env.PORT || 3000;

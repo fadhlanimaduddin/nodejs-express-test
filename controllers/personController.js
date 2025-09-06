@@ -1,22 +1,22 @@
 const pool = require('../lib/db');
 
-// Get all users
-exports.getUsers = async (req, res) => {
+// Get all persons
+exports.getPersons = async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM users ORDER BY id ASC');
+    const result = await pool.query('SELECT * FROM persons ORDER BY id ASC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get user by ID
-exports.getUserById = async (req, res) => {
+// Get person by ID
+exports.getPersonById = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM persons WHERE id = $1', [id]);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Person not found' });
     }
     res.json(result.rows[0]);
   } catch (err) {
@@ -24,12 +24,12 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// Create user
-exports.createUser = async (req, res) => {
+// Create person
+exports.createPerson = async (req, res) => {
   try {
     const { name, nim, ymd } = req.body;
     const result = await pool.query(
-      'INSERT INTO users (name, nim, ymd) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO persons (name, nim, ymd) VALUES ($1, $2, $3) RETURNING *',
       [name, nim, ymd]
     );
     res.status(201).json(result.rows[0]);
@@ -38,17 +38,17 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Update user
-exports.updateUser = async (req, res) => {
+// Update person
+exports.updatePerson = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, nim, ymd } = req.body;
     const result = await pool.query(
-      'UPDATE users SET name=$1, nim=$2, ymd=$3, updated_at=NOW() WHERE id=$4 RETURNING *',
+      'UPDATE persons SET name=$1, nim=$2, ymd=$3, updated_at=NOW() WHERE id=$4 RETURNING *',
       [name, nim, ymd, id]
     );
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Person not found' });
     }
     res.json(result.rows[0]);
   } catch (err) {
@@ -56,15 +56,15 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// Delete user
-exports.deleteUser = async (req, res) => {
+// Delete person
+exports.deletePerson = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query('DELETE FROM users WHERE id=$1 RETURNING *', [id]);
+    const result = await pool.query('DELETE FROM persons WHERE id=$1 RETURNING *', [id]);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'Person not found' });
     }
-    res.json({ message: 'User deleted', user: result.rows[0] });
+    res.json({ message: 'Person deleted', person: result.rows[0] });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
